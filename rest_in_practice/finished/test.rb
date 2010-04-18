@@ -1,16 +1,18 @@
 require 'rubygems'
 require 'restfulie'
+require 'ruby-debug'
 
 module BuySteps
+  
   def steps
     
     def i_want?(name)
-      @what.find { |desired| name[desired] }
+      @what.find{ |desired| name[desired]}
     end
     
     When "there is a required item" do |resource|
-      if resource.keys.first == "items"
-        @desired = resource.items.item.find { |item| i_want?(item.name) }
+      if resource.keys.first=="items"
+        @desired = resource.items.item.find {|item| i_want?(item.name)}
       else
         false
       end
@@ -41,7 +43,7 @@ module BuySteps
     end
     
     def pick_desired
-      @what.delete_if { |desired| @desired.name[desired] }
+      @what.delete_if {|desired| @desired.name[desired]}
     end
     
     Then "create the basket" do |resource|
@@ -49,7 +51,7 @@ module BuySteps
       basket = {:basket => {:items => [{:id => @desired['id']}]} }
       @basket_resource = resource.items.links.basket.post! basket
     end
-
+    
     Then "add to the basket" do |resource|
       pick_desired
       items = {"items" => [{:id => @desired['id']}]}
@@ -64,9 +66,11 @@ module BuySteps
   end
 end
 
+
+
 module BuyScenario
   def scenarios
-    
+        
     When there is a required item
     And there is a basket
     But didnt create a basket
@@ -87,7 +91,9 @@ module BuyScenario
 end
 
 class BuyingProcess < Restfulie::Client::Mikyung::RestProcessModel
+  
   include BuySteps, BuyScenario
+  
   def initialize(what)
     @what = what
     steps
@@ -95,29 +101,14 @@ class BuyingProcess < Restfulie::Client::Mikyung::RestProcessModel
   end
   
   def completed?(resource)
-    resource.keys.first == "payment"
+    resource.keys.first=="payment"
   end
+  
 end
 
 Restfulie::Common::Logger.logger.level = Logger::INFO
 goal = BuyingProcess.new(["Rest", "Calpis"])
 result = Restfulie::Mikyung.new.achieve(goal).at("http://localhost:3000/items").run
-puts "Objective completed"
-puts result.response.body
 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+puts "Objective was completed"
+puts result.response.body
