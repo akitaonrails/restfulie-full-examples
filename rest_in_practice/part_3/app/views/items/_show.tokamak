@@ -1,0 +1,1 @@
+member.links << link(:rel => :self)

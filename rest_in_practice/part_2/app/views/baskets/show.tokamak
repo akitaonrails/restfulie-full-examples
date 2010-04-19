@@ -1,0 +1,6 @@
+describe_member(@basket) do |member, basket|
+  member.links << link(:rel => :payment, :href => basket_payments_url(@basket))
+  
+  member.price = @basket.price
+  
+end
