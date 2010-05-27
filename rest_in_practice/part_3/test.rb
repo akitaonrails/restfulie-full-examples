@@ -2,11 +2,6 @@ require 'rubygems'
 require 'restfulie'
 require 'ruby-debug'
 
-# x = Restfulie.at('http://localhost:3000/items').accepts('application/xml').get
-# basket = {:basket => {:items => [{:id => 1}]} }
-# debugger
-# x.items.links.basket.post! basket
-
 module BuySteps
   
   def steps
