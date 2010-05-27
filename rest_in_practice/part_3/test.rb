@@ -1,5 +1,11 @@
 require 'rubygems'
 require 'restfulie'
+require 'ruby-debug'
+
+# x = Restfulie.at('http://localhost:3000/items').accepts('application/xml').get
+# basket = {:basket => {:items => [{:id => 1}]} }
+# debugger
+# x.items.links.basket.post! basket
 
 module BuySteps
   
@@ -18,11 +24,11 @@ module BuySteps
     end
     
     When "there is a basket" do |resource|
-      resource.values.first.links("basket")
+      resource.values.first.links.basket
     end
     
     When "there is a payment" do |resource|
-      resource.values.first.links("payment")
+      resource.values.first.links.payment
     end
     
     When "it is a basket" do |resource|
@@ -48,18 +54,18 @@ module BuySteps
     Then "create the basket" do |resource|
       pick_desired
       basket = {:basket => {:items => [{:id => @desired['id']}]} }
-      @basket_resource = resource.items.basket.post! basket
+      @basket_resource = resource.items.links.basket.post! basket
     end
     
     Then "add to the basket" do |resource|
       pick_desired
       items = {"items" => [{:id => @desired['id']}]}
-      @basket_resource = @basket_resource.basket.self.patch! items
+      @basket_resource = @basket_resource.basket.links.self.patch! items
     end
     
     Then "pay" do |resource|
       payment = {:payment => {:cardnumber => "4850000000000001", :cardholder => "guilherme silveira", :amount => resource.basket.price}}
-      resource.basket.payment.post! payment
+      resource.basket.links.payment.post! payment
     end
     
   end

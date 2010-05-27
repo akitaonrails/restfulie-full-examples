@@ -1,1 +1,6 @@
-member.links << link(:rel => :self)
+member.link :self, item_url(item)
+member.values { |values|
+  values.id     item.id
+  values.name   item.name
+  values.price  item.price
+}

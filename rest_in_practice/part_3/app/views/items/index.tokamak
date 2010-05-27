@@ -1,9 +1,11 @@
-describe_collection(@items) do |collection|
+collection(@items) do |collection|
+
+  collection.link "basket", baskets_url
   
-  collection.links << link(:rel => :basket, :href => baskets_url)
-  
-  collection.describe_members(:namespace=>"a") do |member, item|
-    partial "show", binding
+  collection.members do |member, item|
+    member.values do |values|
+      partial "show", binding
+    end
   end
   
 end
