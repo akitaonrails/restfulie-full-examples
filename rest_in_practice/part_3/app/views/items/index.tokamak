@@ -3,9 +3,7 @@ collection(@items) do |collection|
   collection.link "basket", baskets_url
   
   collection.members do |member, item|
-    member.values do |values|
-      partial "show", binding
-    end
+    partial "show", binding
   end
   
 end
