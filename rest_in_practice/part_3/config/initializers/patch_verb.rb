@@ -1,1 +1,1 @@
-require 'restfulie/server/action_controller/routing/patch'
+require 'restfulie/server/action_controller/patch'
