@@ -1,52 +1,17 @@
 require 'rubygems'
 require 'restfulie'
 
-# Quando tem um pagamento
-# E eu ja adicionei o item
-# Entao pague
-# 
-# Quando tenho uma lista de itens
-# Entao escolho o mais barato que eu quero
-# 
-# Quando tenho uma search engine
-# Entao busca o item
+# retrieves the list
+resource = Restfulie.at("http://localhost:3000/items").accepts("application/xml").get
 
-list = Restfulie.at("http://localhost:3000/items").accepts("application/xml").get
+# picks the first item
+basket = {"basket" => {"items" => [{"id" => resource.items.item.first["id"]}]}}
 
-basket = {:items => [{:id => list.item[1].id}]}
+# creates the basket
+resource = resource.items.links.basket.post! basket
 
-basket = list.basket.post!(basket, :root => "basket")
+# prepares the payment
+payment = {"payment" => {"cardnumber" => "4850000000000001", "cardholder" => "guilherme silveira", :amount => resource.basket.price}}
 
-payment = {:cardnumber => "4850000000000001", :cardholder => "guilherme silveira", :amount => basket.price}
-
-receipt = basket.payment.post!(payment.to_xml(:root => "payment"))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-list = Restfulie.at("http://localhost:3000/items").accepts("application/atom+xml").get
-
-basket = {:items => [{:id => list.entries[1].id}]}
-basket = {:items => [{:id => "2"}]}
-
-basket = list.basket.post!(basket, :root => "basket")
-
-payment = {:cardnumber => "4850000000000001", :cardholder => "guilherme silveira", :amount => basket.price}
-
-receipt = basket.payment.post!(payment, :root => "payment")
+# creates the payment
+resource = resource.basket.links.payment.post! payment
